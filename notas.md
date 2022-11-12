@@ -128,3 +128,15 @@ export const websocket = {
 };
 
 ```
+## Live Chat App - Clase 8 Websocket Deploy Test
+- En Postman se seleccion `Websocket Request`
+```
+{
+    "action": "createRoom",
+    "name": "Daniel"
+}
+```
+- Respuesta
+```
+{"message":"You are now connected to room with code b31ae33e","type":"info"}
+```
