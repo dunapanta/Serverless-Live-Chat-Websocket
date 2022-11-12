@@ -1,31 +1,9 @@
-## Live Chat App - Clase 6 Create Room
+import { formatJSONResponse } from "@libs/apiGateway";
+import { dynamo } from "@libs/dynamo";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { UserConnectionRecord } from "src/types/dynamo";
+import { v4 as uuid } from "uuid";
 
-- El primer usuario es el que crea la sala
-- En `functions.ts`
-
-```
-import type { AWS } from "@serverless/typescript";
-
-const functions: AWS["functions"] = {
-  createRoom: {
-    handler: "src/functions/createRoom/index.handler",
-    events: [
-      {
-        websocket:{
-          route: "createRoom" //route that will point to this lambda function
-        }
-      }
-    ],
-  },
-};
-
-export default functions;
-
-```
-
-- Se define funcion `createRoom`
-
-```
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
@@ -78,5 +56,3 @@ export const handler = async (
     });
   }
 };
-
-```
