@@ -46,7 +46,7 @@ export const handler = async (
       return formatJSONResponse({});
     }
 
-    const { name, roomCode } = existingUser;
+    const { roomCode } = existingUser;
 
     const roomUsers = await dynamo.query<UserConnectionRecord>({
       pkValue: roomCode,
@@ -54,21 +54,22 @@ export const handler = async (
       index: "index1",
     });
 
+    const websocketClient = websocket.createClient({ domainName, stage });
+
     //Send message to all users in the room
     const messagePromiseArray = roomUsers
       .filter((targetUser) => {
         return targetUser.id !== existingUser.id;
       })
       .map(async (user) => {
-        const { id: connectionId, domainName, stage } = user;
+        const { id: connectionId } = user;
         return websocket.send({
           data: {
             message,
             from: existingUser.name,
           },
           connectionId,
-          domainName,
-          stage,
+          client: websocketClient,
         });
       });
 
