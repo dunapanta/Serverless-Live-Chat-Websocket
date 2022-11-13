@@ -5,10 +5,21 @@ const functions: AWS["functions"] = {
     handler: "src/functions/createRoom/index.handler",
     events: [
       {
-        websocket:{
-          route: "createRoom" //route that will point to this lambda function
-        }
-      }
+        websocket: {
+          route: "createRoom", //route that will point to this lambda function
+        },
+      },
+    ],
+  },
+
+  joinRoom: {
+    handler: "src/functions/joinRoom/index.handler",
+    events: [
+      {
+        websocket: {
+          route: "joinRoom",
+        },
+      },
     ],
   },
 };
