@@ -251,8 +251,8 @@ export const handler = async (
 
 ```
 
-
 ## Live Chat App - Clase 11 Message and code
+
 ```
 import { formatJSONResponse } from "@libs/apiGateway";
 import { dynamo } from "@libs/dynamo";
@@ -329,6 +329,68 @@ export const handler = async (
       });
 
     await Promise.all(messagePromiseArray);
+
+    return formatJSONResponse({});
+  } catch (err) {
+    return formatJSONResponse({
+      statusCode: 500,
+      data: {
+        error: err.message,
+      },
+    });
+  }
+};
+
+```
+
+## Live Chat App - Clase 14 Disconnect
+
+- Add `$disconnect` function
+
+```
+disconnect: {
+    handler: "src/functions/disconnect/index.handler",
+    events: [
+      {
+        websocket: {
+          route: "$disconnect",
+        },
+      },
+    ],
+  },
+```
+
+- On `dynamo.ts` add `delete` function
+
+```
+delete: (id: string, tableName: string) => {
+    const params: DeleteCommandInput = {
+      TableName: tableName,
+      Key: {
+        id,
+      },
+    };
+    const command = new DeleteCommand(params);
+    return dynamoClient.send(command);
+  },
+```
+
+- Define `disconnect` function
+
+```
+import { formatJSONResponse } from "@libs/apiGateway";
+import { dynamo } from "@libs/dynamo";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+
+export const handler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const tableName = process.env.roomConnectionTable;
+
+    const { connectionId } = event.requestContext;
+
+    await dynamo.delete(connectionId, tableName);
 
     return formatJSONResponse({});
   } catch (err) {

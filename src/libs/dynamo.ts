@@ -1,5 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  DeleteCommand,
+  DeleteCommandInput,
   GetCommand,
   GetCommandInput,
   PutCommand,
@@ -83,5 +85,15 @@ export const dynamo = {
     const response = await dynamoClient.send(command);
 
     return response.Items as T[];
+  },
+  delete: (id: string, tableName: string) => {
+    const params: DeleteCommandInput = {
+      TableName: tableName,
+      Key: {
+        id,
+      },
+    };
+    const command = new DeleteCommand(params);
+    return dynamoClient.send(command);
   },
 };
